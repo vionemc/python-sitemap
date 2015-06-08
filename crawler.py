@@ -2,9 +2,8 @@ import config
 import logging
 
 import re
-from urllib.request import urlopen, Request
-from urllib.robotparser import RobotFileParser
-from urllib.parse import urlparse
+from urllib2 import urlopen, Request, urlparse
+from robotparser import RobotFileParser
 from datetime import datetime
 
 import os
@@ -60,9 +59,9 @@ class Crawler():
 		self.tocrawl = set([domain])
 
 		try:
-			self.target_domain = urlparse(domain)[1]
+			self.target_domain = urlparse.urlparse(domain)[1]
 		except:
-			raise ("Invalid domain")
+			raise ValueError("Invalid domain")
 
 
 		if self.output:
@@ -73,7 +72,7 @@ class Crawler():
 				exit(255)
 
 	def run(self):
-		print (config.xml_header, file=self.output_file)
+		print (config.xml_header, file if file else self.output_file)
 
 		logging.debug("Start the crawling process")
 
@@ -82,13 +81,13 @@ class Crawler():
 
 		logging.debug("Crawling as reach the end of all found link")
 
-		print (config.xml_footer, file=self.output_file)
+		print (config.xml_footer, file if file else self.output_file)
 
 
 	def __crawling(self):
 		crawling = self.tocrawl.pop()
 
-		url = urlparse(crawling)
+		url = urlparse.urlparse(crawling)
 		self.crawled.add(crawling)
 		request = Request(crawling, headers={"User-Agent":config.crawler_user_agent})
 		
@@ -134,7 +133,7 @@ class Crawler():
 			return None
 
 
-		print ("<url><loc>"+url.geturl()+"</loc><lastmod>"+date.strftime('%Y-%m-%dT%H:%M:%S+00:00')+"</lastmod></url>", file=self.output_file)
+		print ("<url><loc>"+url.geturl()+"</loc><lastmod>"+date.strftime('%Y-%m-%dT%H:%M:%S+00:00')+"</lastmod></url>", file if file else self.output_file)
 		if self.output_file:
 			self.output_file.flush()
 
@@ -159,7 +158,7 @@ class Crawler():
 				link=re.sub(toDrop,'',link)
 
 			# Parse the url to get domain and file extension
-			parsed_link = urlparse(link)
+			parsed_link = urlparse.urlparse(link)
 			domain_link = parsed_link.netloc
 			target_extension = os.path.splitext(parsed_link.path)[1][1:]
 
