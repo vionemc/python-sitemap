@@ -2,7 +2,7 @@ Python-Sitemap
 ==============
 Simple script to crawl a website and create a sitemap.xml of all public link in a website
 
-Warning : This script is designed to works with ***Python3***
+Warning : This script is designed to works with ***Python 2.7***. It is modified version from c4software which only worked on Python3
 
 Simple usage
 ------------
